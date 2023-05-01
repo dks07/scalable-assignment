@@ -1,0 +1,14 @@
+cd ~
+mkdir mongodb mongodb/db rabbitmq
+
+#Create directory for assignment code. Get code from Git repos in assignment code directory.
+#To build docker images go to each repository directory and execute docker build command with correct tag 
+docker build . --tag authapi:1.0.0
+docker build . --tag inventoryapi:1.0.0
+docker build . --tag orderapi:1.0.0
+docker build . --tag shippingapi:1.0.0
+
+#Got to docker-compose folder
+docker-compose up -d
+#To stop running containers run
+docker-compose down

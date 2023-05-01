@@ -1,0 +1,87 @@
+version: "3.9"
+services:
+  authapi:
+    image: authapi:1.0.0
+    depends_on:
+      - mongo
+    restart: always
+    environment:
+      - AuthDatabaseSettings__ConnectionString=mongodb://mongo:27017
+    ports:
+      - "5001:80"
+    networks:
+      - servicenetwork
+  inventoryapi:
+    image: inventoryapi:1.0.0
+    depends_on:
+      - mongo
+    restart: always
+    environment:
+      - InventotyDatabaseSettings__ConnectionString=mongodb://mongo:27017
+    ports:
+      - "5002:80"
+    networks:
+      - servicenetwork
+  orderapi:
+    image: orderapi:1.0.0
+    depends_on:
+      - mongo
+      - rabbitmq
+      - inventoryapi
+    restart: always
+    environment:
+      - OrderDatabaseSettings__ConnectionString=mongodb://mongo:27017
+      - AppSettings__InventoryServiceBaseUrl=http://inventoryapi:80/api/inventory
+      - RabbitMQ__HostName=rabbitmq
+      - RabbitMQ__Port=5672
+      - RabbitMQ__VirtualHost=Assignment
+      - RabbitMQ__UserName=guest
+      - RabbitMQ__Password=guest
+    ports:
+      - "5003:80"
+    networks:
+      - servicenetwork
+  shippingapi:
+    image: shippingapi:1.0.0
+    depends_on:
+      - mongo
+      - rabbitmq
+    restart: always
+    environment:
+      - ShippingDatabaseSettings__ConnectionString=mongodb://mongo:27017
+      - RabbitMQ__HostName=rabbitmq
+      - RabbitMQ__Port=5672
+      - RabbitMQ__VirtualHost=Assignment
+      - RabbitMQ__UserName=guest
+      - RabbitMQ__Password=guest
+    ports:
+      - "5004:80"
+    networks:
+      - servicenetwork
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    restart: always
+    environment:
+      - RABBITMQ_DEFAULT_VHOST=Assignment
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    volumes:
+      - ~/rabbitmq:/var/lib/rabbitmq
+    networks:
+      - servicenetwork
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - ~/mongodb/db:/data/db
+    networks:
+      - servicenetwork
+networks:
+  servicenetwork:
+    driver: bridge
+
