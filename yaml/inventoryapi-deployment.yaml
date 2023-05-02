@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.28.0 (c4137012e)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: inventoryapi
+  name: inventoryapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: inventoryapi
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.28.0 (c4137012e)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/docker-compose-servicenetwork: "true"
+        io.kompose.service: inventoryapi
+    spec:
+      containers:
+        - env:
+            - name: InventotyDatabaseSettings__ConnectionString
+              value: mongodb://mongo:27017
+          image: inventoryapi:1.0.0
+          name: inventoryapi
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 80
+          resources: {}
+      restartPolicy: Always
+status: {}

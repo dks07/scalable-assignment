@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: shippingapi-ingress
+spec:
+  rules:
+  - host: shippingapi.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: shippingapi
+            port:
+              number: 5004
+

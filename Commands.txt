@@ -1,3 +1,4 @@
+# Docker compose command
 cd ~
 mkdir mongodb mongodb/db rabbitmq
 
@@ -12,3 +13,14 @@ docker build . --tag shippingapi:1.0.0
 docker-compose up -d
 #To stop running containers run
 docker-compose down
+
+
+
+
+# minikube command
+minikube start
+minikube dashboard
+kubectl create namespace demo
+kubectl apply -f ./yamls -n demo
+kubectl delete -f ./yamls -n demo
+minikube stop

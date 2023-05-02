@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: inventoryapi-ingress
+spec:
+  rules:
+  - host: inventoryapi.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: inventoryapi
+            port:
+              number: 5002
+
